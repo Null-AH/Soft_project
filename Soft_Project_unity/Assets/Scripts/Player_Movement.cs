@@ -13,7 +13,8 @@ public class Player_Movement : MonoBehaviour
     LayerMask groundLayer;
 
     [SerializeField]
-    int _speed = 5;
+    int _speed = 5, _jumpSpeed = 5;
+    float dirx;
     //bool IsGrounded = true;
 
     private void Awake()
@@ -25,7 +26,7 @@ public class Player_Movement : MonoBehaviour
 
     private void Update()
     {
-        float dirx = Input.GetAxis("Horizontal");
+        dirx = Input.GetAxis("Horizontal");
         rb.velocity = new Vector2(dirx * _speed, rb.velocity.y);
 
 
@@ -52,7 +53,7 @@ public class Player_Movement : MonoBehaviour
 
     void Jump()
     {
-        rb.velocity = new Vector2(rb.velocity.x, _speed);
+        rb.velocity = new Vector2(rb.velocity.x, _jumpSpeed);
         anim.SetTrigger("jump");
     }
 
@@ -63,8 +64,10 @@ public class Player_Movement : MonoBehaviour
         return rayCastHit.collider != null;
     }
 
-
-    private void OnCollisionEnter2D(Collision2D collision)
+    public bool canAttack()
     {
+        return dirx == 0 && IsGrounded();
     }
+
+
 }
