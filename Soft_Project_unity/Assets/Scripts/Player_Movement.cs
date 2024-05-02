@@ -1,73 +1,66 @@
+
 using System.Collections;
-using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 
 public class Player_Movement : MonoBehaviour
 {
-    Rigidbody2D rb;
-    Animator anim;
-    Collider2D boxCol;
-
-    [SerializeField]
-    LayerMask groundLayer;
-
-    [SerializeField]
-    int _speed = 5, _jumpSpeed = 5;
-    float dirx;
-    //bool IsGrounded = true;
+    [SerializeField] private float speed;
+    [SerializeField] private float jumpPower;
+    [SerializeField] private LayerMask groundLayer;
+    private Rigidbody2D rb;
+    private Animator anim;
+    private BoxCollider2D boxCollider;
+    private float dirx;
 
     private void Awake()
     {
+        //Grab references for rigidbody and animator from object
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
-        boxCol = GetComponent<Collider2D>();
+        boxCollider = GetComponent<BoxCollider2D>();
     }
 
     private void Update()
     {
         dirx = Input.GetAxis("Horizontal");
-        rb.velocity = new Vector2(dirx * _speed, rb.velocity.y);
 
-
-        //flip
-        if(dirx > 0.01f)
-        {
+        //Flip player when moving left-right
+        if (dirx > 0.01f)
             transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
-        }
-        else if(dirx < -0.01f)
-        {
+        else if (dirx < -0.01f)
             transform.localScale = new Vector3(-1.5f, 1.5f, 1.5f);
-        }
 
-        anim.SetBool("isGrounded", IsGrounded());
-        //jump
-        if (Input.GetKeyDown(KeyCode.Space) && IsGrounded())
-        {
-            Jump();
-        }
-
-        //animations
+        //Set animator parameters
         anim.SetBool("isRunning", dirx != 0);
+        anim.SetBool("isGrounded", isGrounded());
+
+        //movement logic
+
+        rb.velocity = new Vector2(dirx * speed, rb.velocity.y);
+
+        if (Input.GetKey(KeyCode.Space))
+            Jump();
+
     }
 
-    void Jump()
+    private void Jump()
     {
-        rb.velocity = new Vector2(rb.velocity.x, _jumpSpeed);
-        anim.SetTrigger("jump");
+        if (isGrounded())
+        {
+            rb.velocity = new Vector2(rb.velocity.x, jumpPower);
+            anim.SetTrigger("jump");
+        }
     }
 
 
-    bool IsGrounded()
+    private bool isGrounded()
     {
-        RaycastHit2D rayCastHit = Physics2D.BoxCast(boxCol.bounds.center, boxCol.bounds.size,0f,Vector2.down,0.2f,groundLayer);
-        return rayCastHit.collider != null;
+        RaycastHit2D raycastHit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.down, 0.1f, groundLayer);
+        return raycastHit.collider != null;
     }
 
     public bool canAttack()
     {
-        return dirx == 0 && IsGrounded();
+        return dirx == 0 && isGrounded();
     }
-
-
 }
