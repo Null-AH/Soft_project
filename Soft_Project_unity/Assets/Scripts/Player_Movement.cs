@@ -33,11 +33,11 @@ public class Player_Movement : MonoBehaviour
         //flip
         if(dirx > 0.01f)
         {
-            transform.localScale = Vector3.one;
+            transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
         }
         else if(dirx < -0.01f)
         {
-            transform.localScale = new Vector3(-1,1,1);
+            transform.localScale = new Vector3(-1.5f, 1.5f, 1.5f);
         }
 
         anim.SetBool("isGrounded", IsGrounded());
@@ -60,7 +60,7 @@ public class Player_Movement : MonoBehaviour
 
     bool IsGrounded()
     {
-        RaycastHit2D rayCastHit = Physics2D.BoxCast(boxCol.bounds.center, boxCol.bounds.size,0f,Vector2.down,0.1f,groundLayer);
+        RaycastHit2D rayCastHit = Physics2D.BoxCast(boxCol.bounds.center, boxCol.bounds.size,0f,Vector2.down,0.2f,groundLayer);
         return rayCastHit.collider != null;
     }
 
