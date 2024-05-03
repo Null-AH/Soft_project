@@ -38,7 +38,7 @@ public class Player_Movement : MonoBehaviour
 
         rb.velocity = new Vector2(dirx * speed, rb.velocity.y);
 
-        if (Input.GetKey(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space))
             Jump();
 
     }
